@@ -14,7 +14,7 @@ create procedure [dbo].[SpAddEmployeeDetails]
 )
 as
 begin
-insert into employee_payroll values
+insert into employee_payroll1 values
 (
 @EmployeeName,@BasicPay,@StartDate,@Gender,@PhoneNumber,@Address,@Department,@Deductions,@TaxablePay,@NetPay,@Tax
 )

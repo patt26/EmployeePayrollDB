@@ -10,15 +10,15 @@ namespace EmployeePayRollService
     {
         public int EmployeeID { get; set; }
         public string EmployeeName { get; set; }
-        public string PhoneNumber { get; set; }
+        public int PhoneNumber { get; set; }
         public string Address { get; set; }
         public string Department { get; set; }
         public string Gender { get; set; }
         public decimal BasicPay { get; set; }
-        public double Deductions { get; set; }
-        public double TaxablePay { get; set; }
-        public double Tax { get; set; }
-        public double NetPay { get; set; }
+        public decimal Deductions { get; set; }
+        public decimal TaxablePay { get; set; }
+        public decimal Tax { get; set; }
+        public decimal NetPay { get; set; }
         public DateTime StartDate { get; set; }
 
 

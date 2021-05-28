@@ -14,11 +14,11 @@ namespace EmployeePayRollServiceForSQL
             EmployeeModel employee = new EmployeeModel();
             employee.EmployeeName = "Mohan";
             employee.Department = "Tech1";
-            employee.PhoneNumber = "6302907678";
+            employee.PhoneNumber = 254689634;
             employee.Address = "02-Patna";
             employee.Gender = "M";
             employee.BasicPay = 10000.00M;
-            employee.Deductions = 1500.00;
+            employee.Deductions = 150000;
             employee.StartDate = Convert.ToDateTime("2020-11-03");
             //Mock<EmployeeRepo> mockObj = new Mock<EmployeeRepo>();
             //mockObj.Setup(t=>t.AddEmployee(It.IsIn<EmployeeModel>)).return (true);

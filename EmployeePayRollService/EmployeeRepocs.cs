@@ -10,17 +10,18 @@ namespace EmployeePayRollService
     public class EmployeeRepo
     {
         public static string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog = payroll_service; Integrated Security = True; Connect Timeout = 30; Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-        SqlConnection connection = new SqlConnection(connectionString);
+        
         public void GetAllEmployee()
         {
+            SqlConnection connection = new SqlConnection(connectionString);
             try
             {
                 EmployeeModel employeeModel = new EmployeeModel();
-                using (this.connection)
+                using (connection)
                 {
-                    string query = @"Select * from employee_payroll;";
-                    SqlCommand cmd = new SqlCommand(query, this.connection);
-                    this.connection.Open();
+                    string query = @"Select * from employee_payroll1;";
+                    SqlCommand cmd = new SqlCommand(query, connection);
+                    connection.Open();
                     SqlDataReader dr = cmd.ExecuteReader();
                     if (dr.HasRows)
                     {
@@ -32,13 +33,13 @@ namespace EmployeePayRollService
                             employeeModel.BasicPay = dr.GetDecimal(2);
                             employeeModel.StartDate = dr.GetDateTime(3);
                             employeeModel.Gender = dr.GetString(4);
-                            employeeModel.PhoneNumber = dr.GetString(5);
+                            employeeModel.PhoneNumber = dr.GetInt32(5);
                             employeeModel.Address = dr.GetString(6);
                             employeeModel.Department = dr.GetString(7);
-                            employeeModel.Deductions = dr.GetDouble(8);
-                            employeeModel.TaxablePay = dr.GetDouble(9);
-                            employeeModel.Tax = dr.GetDouble(10);
-                            employeeModel.NetPay = dr.GetDouble(11);
+                            employeeModel.Deductions = dr.GetDecimal(8);
+                            employeeModel.TaxablePay = dr.GetDecimal(9);
+                            employeeModel.Tax = dr.GetDecimal(10);
+                            employeeModel.NetPay = dr.GetDecimal(11);
                             System.Console.WriteLine(employeeModel.EmployeeName + " " + employeeModel.BasicPay + " " + employeeModel.StartDate + " " + employeeModel.Gender + " " + employeeModel.PhoneNumber + " " + employeeModel.Address + " " + employeeModel.Department + " " + employeeModel.Deductions + " " + employeeModel.TaxablePay + " " + employeeModel.Tax + " " + employeeModel.NetPay);
                             System.Console.WriteLine("\n");
                         }
@@ -57,12 +58,13 @@ namespace EmployeePayRollService
 
         public bool AddEmployee(EmployeeModel model)
         {
+            SqlConnection connection = new SqlConnection(connectionString);
             try
             {
-                using (this.connection)
+                using (connection)
                 {
                     //var qury=values()
-                    SqlCommand command = new SqlCommand("SpAddEmployeeDetails", this.connection);
+                    SqlCommand command = new SqlCommand("SpAddEmployeeDetails", connection);
                     command.CommandType = System.Data.CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@EmployeeName", model.EmployeeName);
                     command.Parameters.AddWithValue("@PhoneNumber", model.PhoneNumber);
@@ -77,9 +79,9 @@ namespace EmployeePayRollService
                     command.Parameters.AddWithValue("@StartDate", DateTime.Now);
                     //command.Parameters.AddWithValue("@City", model.City);
                     //command.Parameters.AddWithValue("@Country", model.Country);
-                    this.connection.Open();
+                    connection.Open();
                     var result = command.ExecuteNonQuery();
-                    this.connection.Close();
+                    connection.Close();
                     if (result != 0)
                     {
 
@@ -94,7 +96,7 @@ namespace EmployeePayRollService
             }
             finally
             {
-                this.connection.Close();
+                connection.Close();
             }
             return false;
         }
