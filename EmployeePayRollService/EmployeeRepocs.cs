@@ -10,13 +10,13 @@ namespace EmployeePayRollService
     public class EmployeeRepo
     {
         public static string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog = payroll_service; Integrated Security = True; Connect Timeout = 30; Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-        
+        EmployeeModel employeeModel = new EmployeeModel();
         public void GetAllEmployee()
         {
             SqlConnection connection = new SqlConnection(connectionString);
             try
             {
-                EmployeeModel employeeModel = new EmployeeModel();
+               
                 using (connection)
                 {
                     string query = @"Select * from employee_payroll1;";
@@ -100,8 +100,214 @@ namespace EmployeePayRollService
             }
             return false;
         }
+        public bool UpdateEmployee(EmployeeModel model)
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
+            try
+            {
+                using (connection)
+                {
+                    SqlCommand update = new SqlCommand("spUpdateEmployeeSalary",connection);
+                    update.CommandType = System.Data.CommandType.StoredProcedure;
+                    update.Parameters.AddWithValue("@id", model.EmployeeID);
+                    update.Parameters.AddWithValue("@BBasic_Pay", model.BasicPay);
+                    connection.Open();
+                    var result = update.ExecuteNonQuery();
+                    connection.Close();
+                    if (result != 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+            return false;
+        }
+        public void RetriveDateRange()
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
+            try
+            {
+                using (connection)
+                {
+                    string query = "SELECT * from employee_payroll1 where start between '2020-02-01' and GETDATE()";
+                    SqlCommand cmd = new SqlCommand(query, connection);
+                    connection.Open();
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    if (dr.HasRows)
+                    {
+                        while (dr.Read())
+                        {
+                            employeeModel.EmployeeName = dr.GetString(1);
+                            employeeModel.StartDate = dr.GetDateTime(3);
+                            Console.WriteLine("Name= {0}  Date={1}",employeeModel.EmployeeName,employeeModel.StartDate);
+
+                        }
+                        
+                    }
+                    else
+                    {
+                        Console.WriteLine("No such Data Found!!");
+                    }
+                }
+
+                
+            }
+            
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+            
+        }
+        public void Operations()
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
+            try
+            {
+                using (connection)
+                {
+                    string SumQuery =@"select sum (Basic_Pay) from employee_payroll1 where gender='M' group by gender";
+                    string AverageQuery = "select avg (Basic_Pay) from employee_payroll1 where gender='M' group by gender";
+                    string MinQuery = "select min (Basic_Pay) from employee_payroll1 where gender='M' group by gender";
+                    string MaxQuery = "select max(Basic_Pay) from employee_payroll1 where gender = 'M' group by gender";
+                    string CountQuery = "select count (Basic_Pay) from employee_payroll1 where gender ='M' group by gender";
+
+                    SqlCommand Sumcmd = new SqlCommand(SumQuery, connection);
+                    connection.Open();
+                    SqlDataReader dr = Sumcmd.ExecuteReader();
+                    if (dr.HasRows)
+                    {
+                        while (dr.Read())
+                        {
+                            decimal Sum=  dr.GetDecimal(0);
+                            //employeeModel.Gender = dr.GetString(4);
+                            Console.WriteLine("Salary= {0}  Gender={1}", Sum, employeeModel.Gender);
+
+                        }
+
+                    }
+                    else
+                    {
+                        Console.WriteLine("No such Data Found!!");
+                    }
+                    connection.Close();
+                    
+                    SqlCommand Avgcmd = new SqlCommand(AverageQuery, connection);
+                    connection.Open();
+                    SqlDataReader Avgdr = Avgcmd.ExecuteReader();
+                    if (Avgdr.HasRows)
+                    {
+                        while(Avgdr.Read())
+                        {
+                            decimal AVG = Avgdr.GetDecimal(0);
+                            Console.WriteLine("Average of Salaries = "+AVG);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("No such Data Found!!");
+                        
+                    }
+                    connection.Close();
+
+                    SqlCommand Mincmd = new SqlCommand(MinQuery, connection);
+                    connection.Open();
+                    SqlDataReader Mindr = Mincmd.ExecuteReader();
+                    if (Mindr.HasRows)
+                    {
+                        while (Mindr.Read())
+                        {
+                            decimal MIN = Mindr.GetDecimal(0);
+                            Console.WriteLine("Minimum Salary = " + MIN);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("No such Data Found!!");
+
+                    }
+                    connection.Close();
+
+
+                    SqlCommand Maxcmd = new SqlCommand(MaxQuery, connection);
+                    connection.Open();
+                    SqlDataReader Maxdr = Maxcmd.ExecuteReader();
+                    if (Maxdr.HasRows)
+                    {
+                        while (Maxdr.Read())
+                        {
+                            decimal MAX = Maxdr.GetDecimal(0);
+                            Console.WriteLine("Maximum Salary = " + MAX);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("No such Data Found!!");
+
+                    }
+                    connection.Close();
+
+
+                    SqlCommand Countcmd = new SqlCommand(CountQuery, connection);
+                    connection.Open();
+                    SqlDataReader Countdr = Countcmd.ExecuteReader();
+                    if (Countdr.HasRows)
+                    {
+                        while (Countdr.Read())
+                        {
+                            int COUNT = Countdr.GetInt32(0);
+                            Console.WriteLine("Total Employees = " + COUNT);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("No such Data Found!!");
+
+                    }
+                    
+
+                }
+                
+
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+
+
+
+
+
+
+
+        }
 
     }
-
-
 }
+            
+        
+
+    
+
+
+
